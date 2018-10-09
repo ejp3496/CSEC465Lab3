@@ -5,7 +5,7 @@ os=
 getos() {
   ipaddress=$1
   ping $ipaddress > /dev/null
-  if [$? != 0]; then
+  if [ $? != 0 ]; then
     return 1
   fi
   os=`arp-fingerprint $ipaddress`
@@ -17,7 +17,7 @@ file=$1
 cat $file | while read line; do
   line=`echo $line tr '\n' ''`
   getos $line
-  if [$? = 0]; then
+  if [ $? = 0 ]; then
     echo $line $os
   fi
 done
