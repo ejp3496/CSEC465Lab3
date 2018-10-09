@@ -24,8 +24,11 @@ def get_ip(octets):
 
 
 def print_usage():
-    print("Usage: \npython pingsweep.py filename")
-    print("filename : input file containing ranges to sweep through")
+    print("Usage: \npython pingsweep.py addresses")
+    print("addresses : range or network to scan.")
+    print("Examples:")
+    print("python pingsweep.py 10.10.1.1-10.10.2.50")
+    print("python pingsweep.py 10.10.0.0/16")
     sys.exit(0)
 
 
@@ -36,40 +39,33 @@ def main():
         if sys.argv[1] == "-h" or sys.argv[1] == "?" or sys.argv[1] == "--help":
             print_usage()
     
-    with open(sys.argv[1]) as fp:
-        up = []
-        for line in fp:
-            if '-' in line:
-                start = line.split('-')[0]
-                end = line.split('-')[1]
-                start_octets_strings = start.split('.')
-                end_octets_strings = end.split('.')
-                start_octets = parse_to_int(start_octets_strings)
-                end_octets = parse_to_int(end_octets_strings)
+    
+    up = []
+    if '-' in sys.argv[1]:
+        start = sys.argv[1].split('-')[0]
+        end = sys.argv[1].split('-')[1]
+        start_octets_strings = start.split('.')
+        end_octets_strings = end.split('.')
+        start_octets = parse_to_int(start_octets_strings)
+        end_octets = parse_to_int(end_octets_strings)
 
-                ipstruct = struct.Struct('>I')
-                x, = ipstruct.unpack(socket.inet_aton(start))
-                y, = ipstruct.unpack(socket.inet_aton(end))
-                for i in range(x, y + 1):
-                    response = os.system("ping -c 1 " + socket.inet_ntoa(ipstruct.pack(i)) + " > /dev/null")
-                    if response == 0:
-                        up.append(socket.inet_ntoa(ipstruct.pack(i)))
+        ipstruct = struct.Struct('>I')
+        x, = ipstruct.unpack(socket.inet_aton(start))
+        y, = ipstruct.unpack(socket.inet_aton(end))
+        for i in range(x, y + 1):
+            response = os.system("ping -c 1 " + socket.inet_ntoa(ipstruct.pack(i)) + " > /dev/null")
+            if response == 0:
+                up.append(socket.inet_ntoa(ipstruct.pack(i)))
 
-                # start_address = ipaddress.IPv4Address(unicode(start))
-                # end_address = ipaddress.IPv4Address(unicode(end))
-                # while start < end:
-                # 	print(str(start))
-                # 	start += 1
-
-            elif '/' in line:
-                network = ipaddress.ip_network(unicode(line.strip()))
-                for address in network.hosts():
-                    response = os.system("ping -c 1 " + str(address) + " > /dev/null")
-                    if response == 0:
-                        up.append(str(address))
-            else:
-                print("Invalid formatting in file: " + line.strip())
-                sys.exit(1)
+    elif '/' in sys.argv[1]:
+        network = ipaddress.ip_network(unicode(sys.argv[1]))
+        for address in network.hosts():
+            response = os.system("ping -c 1 " + str(address) + " > /dev/null")
+            if response == 0:
+                up.append(str(address))
+    else:
+        print("Invalid formatting: " + sys.argv[1])
+        sys.exit(1)
 
         
     print("Hosts that are up:")
