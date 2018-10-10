@@ -15,7 +15,7 @@ getos() {
 
 file=$1
 cat $file | while read line; do
-  line=`echo $line tr '\n' ''`
+  line=`echo $line | tr '\n' ''`
   getos $line
   if [ $? = 0 ]; then
     echo $line $os
