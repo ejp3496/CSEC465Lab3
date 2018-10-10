@@ -4,7 +4,7 @@ os=
 
 getos() {
   ipaddress=$1
-  ping $ipaddress > /dev/null
+  ping -c 1 $ipaddress > /dev/null
   if [ $? != 0 ]; then
     return 1
   fi
