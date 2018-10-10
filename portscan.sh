@@ -25,17 +25,21 @@ getipaddresses() {
 
 getportnum() {
   ports=$1
-  if [[ $ports = *-* ]]; then
-    echo $ports | tr '-' ' ' | read first last
-    ports=`seq $first $last`
-  else
-    if [[ $ports = *,* ]]; then
-      ports=`echo $ports | tr ',' ' '`
+  if [[ $ports = *,* ]]; then
+    ports=`echo $ports | tr ',' ' '`
   fi
 }
 
 addresses=$1
+if [ "$addresses" = "" ]; then
+  echo "no addresses specified"
+  exit 1
+fi
 portrange=$2
+if [ "$portrange" = "" ]; then
+  echo "no ports specified"
+  exit 1
+fi
 
 getipaddresses $addresses
 getportnum $portrange
@@ -43,8 +47,6 @@ getportnum $portrange
 for iprange in $ipadd; do
   addres=`expandipadd $iprange`
   for ip in $addres; do
-    for port in $ports; do
-      # if ip is up check port; output $port if port is open
-    done
+    nc -zv $ip $ports
   done
 done
