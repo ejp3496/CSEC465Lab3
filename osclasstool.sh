@@ -4,7 +4,7 @@ os=
 
 getos() {
   ipaddress=$1
-  ping -c 1 $ipaddress > /dev/null
+  ping -c 2 $ipaddress > /dev/null
   if [ $? != 0 ]; then
     return 1
   fi
@@ -15,9 +15,11 @@ getos() {
 
 file=$1
 cat $file | while read line; do
-  line=`echo $line | tr '\n' ''`
+  line=`echo $line | tr -d '\n'`
   getos $line
   if [ $? = 0 ]; then
-    echo $line $os
+    if [ "$os" != "" ]; then
+      echo $line $os
+    fi
   fi
 done
