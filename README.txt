@@ -5,9 +5,9 @@ NetShareScanner.ps1
   
 nslookup.ps1
   usage: powershell ./nslookup.ps1 file.txt
-  the file should conatain a list of host names to be looked up (ine per line)
+  the file should conatain a list of host names to be looked up (one per line)
   
-  result: will return the address to the hosts listed in the file or a warning if the host name could not be identified
+  result: will print hostnames with their corresponding address if it was resolved. If not, the value will display as "Record not found".
   
  osclasstool.sh
   usage: ./osclasstool.sh file.txt
