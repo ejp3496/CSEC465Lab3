@@ -1,7 +1,9 @@
 NetShareScanner.ps1
   usage: powershell ./NetShareScanner.ps1
   
-  result: will list all host and their respective network shares the users "neighborhood"
+  result: will list all host and their respective network shares.
+    The script will then attempt to connect to each share 
+		and print weather or not it was successful.
   
 nslookup.ps1
   usage: powershell ./nslookup.ps1 file.txt
