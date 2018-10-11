@@ -92,5 +92,9 @@ ip_list=$(getIPs $addresses)
 port=$(getportnum $portrange)
 
 for ip in $ip_list; do
-  nc -zv $ip $port
+  #nc -zv $ip $port
+  for p in $port; do
+        timeout 1 bash -c "echo > /dev/tcp/$ip/$p" && echo "port $p is open" || echo "port $p is closed"
+  done
 done
+
