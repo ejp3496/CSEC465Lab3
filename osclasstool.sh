@@ -1,17 +1,30 @@
 #!/bin/bash
 
-os=
-
 getos() {
-  ipaddress=$1
-  ping -c 2 $ipaddress > /dev/null
-  if [ $? != 0 ]; then
-    return 1
-  fi
-  os=`arp-fingerprint $ipaddress`
-  os=${os:25}
-  return 0
+
+	echo $1": "
+	ttl=$(ping -c1 $1)
+
+	for word in $ttl
+	do
+		if [[ $word == "ttl="* ]];then
+			ttl=${word:4}
+		fi
+	done
+
+	case $ttl in
+		"64")
+			echo "linux,red hat,MacOS X(10.5.6)";;
+		"128")
+			echo "windows 10,server 2008,7,vista,XP";;
+		"255")	
+			echo "OpenBSD,Solaris,Startus";;
+	
+
+	esac
+	#echo $ttl
 }
+
 
 file=$1
 cat $file | while read line; do
@@ -23,3 +36,4 @@ cat $file | while read line; do
     fi
   fi
 done
+
